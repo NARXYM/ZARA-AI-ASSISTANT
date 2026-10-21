@@ -1,0 +1,1213 @@
+Gradle Build Files
+build.gradle.kts (root)
+
+
+// Root-level build file
+plugins {
+    id("com.android.application") version "8.2.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+}
+settings.gradle.kts
+
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Zara"
+include(":app")
+gradle.properties
+
+
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=true
+kotlin.code.style=official
+android.nonTransitiveRClass=true
+gradle/wrapper/gradle-wrapper.properties
+
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+app/build.gradle.kts
+
+
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "com.zara.assistant"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.zara.assistant"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions { jvmTarget = "17" }
+
+    buildFeatures { viewBinding = true }
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("org.jetbrains.kotlinx:coroutines-android:1.7.3")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+app/proguard-rules.pro
+
+
+-keepattributes *Annotation*
+-dontwarn androidx.**
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keep class okhttp3.** { *; }
+AndroidManifest.xml
+app/src/main/AndroidManifest.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Zara"
+        tools:targetApi="34">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/Theme.Zara">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".MyAccessibilityService"
+            android:exported="false"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+    </application>
+</manifest>
+Accessibility Config
+app/src/main/res/xml/accessibility_service_config.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeViewClicked|typeViewFocused|typeViewLongClicked|typeViewScrolled|typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault|flagReportViewIds|flagRetrieveInteractiveWindows|flagRequestTouchExplorationMode"
+    android:canPerformGestures="true"
+    android:canRetrieveWindowContent="true"
+    android:description="@string/accessibility_service_description"
+    android:notificationTimeout="100"
+    android:packageNames="com.instagram.android,com.google.android.youtube,com.whatsapp,com.zara.assistant" />
+Resources
+res/values/strings.xml
+
+
+<resources>
+    <string name="app_name">Zara</string>
+    <string name="app_name_devanagari">ज़ारा</string>
+    <string name="accessibility_service_label">Zara Assistant</string>
+    <string name="accessibility_service_description">Allows Zara to perform on-screen gestures such as scrolling reels, auto-clicking, and reading text from other apps. Works fully offline.</string>
+    <string name="tap_to_speak">Tap to speak</string>
+    <string name="listening">Listening…</string>
+    <string name="thinking">Thinking…</string>
+    <string name="speaking">Zara is speaking…</string>
+    <string name="idle">Hi, I\'m Zara. Tap the mic to talk.</string>
+    <string name="offline_mode">Offline mode</string>
+    <string name="online_mode">Online mode</string>
+    <string name="enable_accessibility">Enable Accessibility</string>
+    <string name="accessibility_not_enabled">Accessibility service is off. Tap to enable Zara\'s automation features.</string>
+    <string name="grant_mic_permission">Grant microphone permission</string>
+    <string name="mic_permission_denied">Microphone permission is required for voice commands.</string>
+    <string name="retry">Retry</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="channel_name">Zara Assistant</string>
+    <string name="channel_description">Keeps Zara listening while you switch apps.</string>
+    <string name="foreground_title">Zara is running</string>
+    <string name="foreground_text">Tap to open the assistant.</string>
+</resources>
+res/values/colors.xml
+
+
+<resources>
+    <color name="primary">#1E88E5</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#64B5F6</color>
+    <color name="accent">#26C6DA</color>
+    <color name="accent_dark">#00ACC1</color>
+    <color name="bg">#0B0E14</color>
+    <color name="surface">#141926</color>
+    <color name="surface_variant">#1F2638</color>
+    <color name="outline">#2A3142</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#AEB7C9</color>
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FFB300</color>
+    <color name="error">#EF5350</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="pulse_online">#26C6DA</color>
+    <color name="pulse_offline">#FFB300</color>
+</resources>
+res/values/themes.xml
+
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Zara" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorError">@color/error</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>
+        <item name="android:windowBackground">@color/bg</item>
+    </style>
+</resources>
+res/layout/activity_main.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name_devanagari"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/modePill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chip_bg"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="6dp"
+            android:text="@string/offline_mode"
+            android:textColor="@color/warning"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/transcriptScroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="20dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/statusText">
+
+        <LinearLayout
+            android:id="@+id/transcript"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/idle"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/micButton" />
+
+    <ImageButton
+        android:id="@+id/micButton"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/mic_background"
+        android:contentDescription="@string/tap_to_speak"
+        android:src="@android:drawable/ic_btn_speak_now"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/accessibilityHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/surface_variant"
+        android:padding="14dp"
+        android:text="@string/accessibility_not_enabled"
+        android:textColor="@color/warning"
+        android:textSize="13sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+res/layout/item_message.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@color/text_primary"
+    android:textSize="15sp"
+    android:lineSpacingExtra="4dp"
+    android:padding="12dp" />
+res/drawable/mic_background.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/mic_bg_circle" />
+    <item>
+        <shape android:shape="oval">
+            <stroke android:width="3dp" android:color="@color/accent" />
+        </shape>
+    </item>
+</layer-list>
+res/drawable/mic_bg_circle.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/primary" />
+    <size android:width="160dp" android:height="160dp" />
+</shape>
+res/drawable/chip_bg.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/outline" />
+    <size android:width="48dp" android:height="48dp" />
+</shape>
+res/drawable/ic_launcher_foreground.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,32 L78,32 L78,42 L46,76 L78,76 L78,86 L30,86 L30,76 L62,42 L30,42 Z" />
+</vector>
+res/mipmap-anydpi-v26/ic_launcher.xml and ic_launcher_round.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/primary" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+res/mipmap/ic_launcher.xml (pre-26 fallback)
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/primary" />
+    <size android:width="48dp" android:height="48dp" />
+</shape>
+res/mipmap/ic_launcher_round.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/primary" />
+    <size android:width="48dp" android:height="48dp" />
+</shape>
+res/xml/backup_rules.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="sharedpref" path="device.xml" />
+</full-backup-content>
+res/xml/data_extraction_rules.xml
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="sharedpref" path="." />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="sharedpref" path="." />
+    </device-transfer>
+</data-extraction-rules>
+Kotlin Source
+com/zara/assistant/tts/ZaraTts.kt
+
+package com.zara.assistant.tts
+
+import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import java.util.Locale
+
+class ZaraTts(context: Context) : TextToSpeech.OnInitListener {
+
+    companion object {
+        private const val TAG = "ZaraTts"
+        private const val UTTERANCE_ID = "zara_utterance"
+    }
+
+    interface Callback {
+        fun onSpeechStarted()
+        fun onSpeechDone()
+    }
+
+    private var tts: TextToSpeech = TextToSpeech(context.applicationContext, this)
+    private var callback: Callback? = null
+    @Volatile private var ready = false
+
+    fun setCallback(cb: Callback?) { callback = cb }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                tts.setLanguage(Locale.getDefault())
+            }
+            applyFemaleVoice()
+            tts.setOnUtteranceProgressListener(object : android.speech.tts.UtteranceProgressListener() {
+                override fun onStart(utteranceId: String?) { callback?.onSpeechStarted() }
+                override fun onDone(utteranceId: String?) { callback?.onSpeechDone() }
+                @Deprecated("Deprecated in API")
+                override fun onError(utteranceId: String?) { callback?.onSpeechDone() }
+            })
+            ready = true
+        }
+    }
+
+    private fun applyFemaleVoice() {
+        try {
+            val voices = tts.voices ?: return
+            val female = voices.firstOrNull { v ->
+                v.locale?.language == "en" &&
+                    (v.name.contains("female", ignoreCase = true) ||
+                        v.name.contains("woman", ignoreCase = true) ||
+                        v.name.contains("zira", ignoreCase = true) ||
+                        v.name.contains("samantha", ignoreCase = true) ||
+                        v.name.contains("google uk english female", ignoreCase = true))
+            } ?: voices.firstOrNull { v -> v.locale?.language == "en" }
+            if (female != null) tts.voice = female
+        } catch (e: Exception) { }
+        tts.setPitch(1.1f)
+        tts.setSpeechRate(0.95f)
+    }
+
+    fun speak(text: String) {
+        if (!ready || text.isBlank()) return
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID)
+    }
+
+    fun stop() { tts.stop() }
+    fun shutdown() { tts.stop(); tts.shutdown(); ready = false }
+    fun isReady(): Boolean = ready
+}
+com/zara/assistant/stt/ZaraSpeechRecognizer.kt
+
+package com.zara.assistant.stt
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.util.Log
+import java.util.Locale
+
+class ZaraSpeechRecognizer(private val context: Context) {
+
+    companion object { private const val TAG = "ZaraSTT" }
+
+    interface Listener {
+        fun onReady()
+        fun onPartial(text: String)
+        fun onResult(text: String)
+        fun onError(code: Int)
+        fun onEnd()
+    }
+
+    private var recognizer: SpeechRecognizer? = null
+    private var listener: Listener? = null
+
+    fun setListener(l: Listener) { listener = l }
+
+    fun startListening() {
+        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
+            listener?.onError(SpeechRecognizer.ERROR_SERVICE_UNAVAILABLE)
+            return
+        }
+        stopListening()
+        recognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
+            setRecognitionListener(object : RecognitionListener {
+                override fun onReadyForSpeech(params: Bundle?) { listener?.onReady() }
+                override fun onBeginningOfSpeech() {}
+                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onBufferReceived(buffer: ByteArray?) {}
+                override fun onEndOfSpeech() { listener?.onEnd() }
+                override fun onError(error: Int) { listener?.onError(error) }
+                override fun onResults(results: Bundle?) {
+                    val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    listener?.onResult(matches?.firstOrNull().orEmpty())
+                }
+                override fun onPartialResults(partialResults: Bundle?) {
+                    val partial = partialResults
+                        ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                        ?.firstOrNull().orEmpty()
+                    if (partial.isNotEmpty()) listener?.onPartial(partial)
+                }
+                override fun onEvent(eventType: Int, params: Bundle?) {}
+            })
+        }
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            putExtra("android.speech.extra.DICTATION_MODE", true)
+        }
+        recognizer?.startListening(intent)
+    }
+
+    fun stopListening() {
+        recognizer?.stopListening()
+        recognizer?.destroy()
+        recognizer = null
+    }
+
+    fun destroy() { stopListening() }
+}
+com/zara/assistant/net/NetworkUtil.kt
+
+package com.zara.assistant.net
+
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+
+object NetworkUtil {
+    fun isOnline(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            ?: return false
+        val network = cm.activeNetwork ?: return false
+        val caps = cm.getNetworkCapabilities(network) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+            (caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+    }
+}
+com/zara/assistant/ai/AiHandler.kt
+
+package com.zara.assistant.ai
+
+interface AiHandler {
+    fun isAvailable(): Boolean
+    fun getReply(input: String, callback: (String) -> Unit)
+}
+com/zara/assistant/ai/OnlineAiHandler.kt
+
+package com.zara.assistant.ai
+
+import android.util.Log
+import com.zara.assistant.net.NetworkUtil
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.concurrent.TimeUnit
+
+class OnlineAiHandler(private val context: android.content.Context) : AiHandler {
+
+    companion object {
+        private const val TAG = "OnlineAi"
+        private const val API_URL = "https://api.openai.com/v1/chat/completions"
+        private const val API_KEY = "REPLACE_WITH_YOUR_API_KEY"
+        private const val MODEL = "gpt-3.5-turbo"
+        private const val SYSTEM_PROMPT =
+            "You are Zara (ज़ारा), a helpful, friendly female voice assistant. " +
+            "Keep answers short and conversational since they will be spoken aloud."
+    }
+
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
+
+    private val jsonMedia = "application/json; charset=utf-8".toMediaType()
+
+    override fun isAvailable(): Boolean = NetworkUtil.isOnline(context)
+
+    override fun getReply(input: String, callback: (String) -> Unit) {
+        if (!isAvailable() || API_KEY == "REPLACE_WITH_YOUR_API_KEY") {
+            callback("")
+            return
+        }
+        try {
+            val body = JSONObject().apply {
+                put("model", MODEL)
+                val messages = JSONArray()
+                messages.put(JSONObject().put("role", "system").put("content", SYSTEM_PROMPT))
+                messages.put(JSONObject().put("role", "user").put("content", input))
+                put("messages", messages)
+                put("max_tokens", 300)
+            }.toString()
+
+            val request = Request.Builder()
+                .url(API_URL)
+                .header("Authorization", "Bearer $API_KEY")
+                .header("Content-Type", "application/json")
+                .post(body.toRequestBody(jsonMedia))
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) { callback(""); return }
+                val reply = parseReply(response.body?.string().orEmpty())
+                callback(reply)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Online AI request failed", e)
+            callback("")
+        }
+    }
+
+    private fun parseReply(json: String): String = try {
+        JSONObject(json).getJSONArray("choices")
+            .getJSONObject(0).getJSONObject("message").getString("content").trim()
+    } catch (e: Exception) { "" }
+}
+com/zara/assistant/ai/OfflineResponseHandler.kt
+
+package com.zara.assistant.ai
+
+import com.zara.assistant.actions.AppLauncher
+import com.zara.assistant.actions.CommandType
+
+class OfflineResponseHandler : AiHandler {
+
+    private val greetings = listOf("Hi, I'm Zara. How can I help?", "Hello! Zara here.", "Hey there, what can I do for you?")
+    private val farewells = listOf("Goodbye! Talk soon.", "See you later!", "Bye for now.")
+
+    override fun isAvailable(): Boolean = true
+
+    override fun getReply(input: String, callback: (String) -> Unit) {
+        callback(generate(input))
+    }
+
+    fun generate(input: String): String {
+        val text = input.trim().lowercase()
+        if (text.isBlank()) return "I didn't catch that. Could you say it again?"
+        if (text.contains(Regex("\\b(hi|hello|hey|namaste|namaskar)\\b"))) return greetings.random()
+        if (text.contains(Regex("\\b(bye|goodbye|see you|good night)\\b"))) return farewells.random()
+        if (text.contains("how are you")) return "I'm doing great, thanks for asking! What would you like me to do?"
+        if (text.contains(Regex("\\b(who are you|your name|what are you)\\b")))
+            return "I'm Zara, your offline voice assistant. I can open apps, scroll reels, and chat when you're online."
+        if (text.contains(Regex("\\b(time|what time)\\b")))
+            return "It's ${java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault()).format(java.util.Date())}."
+        if (text.contains(Regex("\\b(date|what day|today)\\b")))
+            return "Today is ${java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault()).format(java.util.Date())}."
+        if (text.startsWith("open ") || text.startsWith("launch ")) {
+            val app = text.substringAfter("open ").substringAfter("launch ").trim()
+            return if (AppLauncher.resolvePackage(app) != null) "Opening $app." else "I don't know how to open $app yet."
+        }
+        if (text.contains("scroll") && text.contains("reel")) return "Scrolling reels for you."
+        if (text.contains("scroll up")) return "Scrolling up."
+        if (text.contains("scroll down") || text.contains("scroll")) return "Scrolling down."
+        if (text == "stop" || text.contains("stop scrolling")) return "Okay, stopped."
+        if (text.contains("go back") || text == "back") return "Going back."
+        if (text.contains(Regex("\\b(thanks|thank you)\\b"))) return "You're welcome!"
+        return "I'm offline right now, so I can only handle basic commands. " +
+            "Try saying \"open YouTube\", \"scroll reels\", or ask me the time."
+    }
+
+    fun classify(text: String): CommandType {
+        val t = text.trim().lowercase()
+        return when {
+            t.startsWith("open ") || t.startsWith("launch ") -> CommandType.OPEN_APP
+            t.contains("scroll") && t.contains("reel") -> CommandType.SCROLL_REELS
+            t.contains("scroll up") -> CommandType.SCROLL_UP
+            t.contains("scroll down") || t == "scroll" -> CommandType.SCROLL_DOWN
+            t == "stop" || t.contains("stop scrolling") -> CommandType.STOP
+            t.contains("go back") || t == "back" -> CommandType.BACK
+            else -> CommandType.CHAT
+        }
+    }
+}
+com/zara/assistant/actions/CommandType.kt
+
+package com.zara.assistant.actions
+
+enum class CommandType {
+    CHAT, OPEN_APP, SCROLL_REELS, SCROLL_UP, SCROLL_DOWN, STOP, BACK
+}
+com/zara/assistant/actions/AppLauncher.kt
+
+package com.zara.assistant.actions
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+
+object AppLauncher {
+
+    private const val TAG = "AppLauncher"
+
+    private val APP_PACKAGES = mapOf(
+        "youtube" to "com.google.android.youtube",
+        "yt" to "com.google.android.youtube",
+        "instagram" to "com.instagram.android",
+        "insta" to "com.instagram.android",
+        "whatsapp" to "com.whatsapp",
+        "facebook" to "com.facebook.katana",
+        "fb" to "com.facebook.katana",
+        "chrome" to "com.android.chrome",
+        "browser" to "com.android.chrome",
+        "gmail" to "com.google.android.gm",
+        "maps" to "com.google.android.apps.maps",
+        "google maps" to "com.google.android.apps.maps",
+        "spotify" to "com.spotify.music",
+        "music" to "com.spotify.music",
+        "camera" to "com.android.camera",
+        "calculator" to "com.android.calculator2",
+        "clock" to "com.google.android.deskclock",
+        "settings" to "com.android.settings",
+        "phone" to "com.android.dialer",
+        "dialer" to "com.android.dialer",
+        "messages" to "com.google.android.apps.messaging",
+        "sms" to "com.google.android.apps.messaging",
+        "telegram" to "org.telegram.messenger",
+        "twitter" to "com.twitter.android",
+        "x" to "com.twitter.android"
+    )
+
+    fun resolvePackage(name: String): String? = APP_PACKAGES[name.trim().lowercase()]
+
+    fun launch(context: Context, name: String): Boolean {
+        val pkg = resolvePackage(name) ?: return false
+        return launchPackage(context, pkg)
+    }
+
+    fun launchPackage(context: Context, pkg: String): Boolean = try {
+        val intent = context.packageManager.getLaunchIntentForPackage(pkg)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+            true
+        } else {
+            openPlayStore(context, pkg)
+            false
+        }
+    } catch (e: Exception) { false }
+
+    private fun openPlayStore(context: Context, pkg: String) {
+        try {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$pkg"))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        } catch (e: Exception) {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$pkg"))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
+    }
+}
+com/zara/assistant/actions/AccessibilityController.kt
+
+package com.zara.assistant.actions
+
+import com.zara.assistant.MyAccessibilityService
+
+object AccessibilityController {
+
+    @Volatile private var service: MyAccessibilityService? = null
+
+    fun attach(service: MyAccessibilityService) { this.service = service }
+
+    fun detach() {
+        service?.stopScrolling()
+        service = null
+    }
+
+    fun isAvailable(): Boolean = service != null
+
+    fun scrollDown(): Boolean = service?.scrollDown() ?: false
+    fun scrollUp(): Boolean = service?.scrollUp() ?: false
+
+    fun startScrollingReels(): Boolean {
+        service?.startScrollingReels()
+        return service != null
+    }
+
+    fun stopScrolling() { service?.stopScrolling() }
+    fun pressBack(): Boolean = service?.pressBack() ?: false
+}
+com/zara/assistant/actions/CommandProcessor.kt
+
+package com.zara.assistant.actions
+
+import com.zara.assistant.ai.AiHandler
+import com.zara.assistant.ai.OfflineResponseHandler
+
+class CommandProcessor(
+    private val context: android.content.Context,
+    private val onlineHandler: AiHandler,
+    private val offlineHandler: OfflineResponseHandler
+) {
+    interface Callback { fun onReply(reply: String) }
+
+    fun process(text: String, callback: Callback) {
+        when (offlineHandler.classify(text)) {
+            CommandType.OPEN_APP -> {
+                val appName = text.substringAfter("open ").substringAfter("launch ").trim()
+                val launched = AppLauncher.launch(context, appName)
+                callback.onReply(if (launched) "Opening $appName." else "I couldn't open $appName. It may not be installed.")
+            }
+            CommandType.SCROLL_REELS -> {
+                val ok = AccessibilityController.startScrollingReels()
+                callback.onReply(if (ok) "Scrolling reels. Say stop when you're done." else "I need the accessibility service enabled to scroll. Please turn it on in settings.")
+            }
+            CommandType.SCROLL_UP -> {
+                val ok = AccessibilityController.scrollUp()
+                callback.onReply(if (ok) "Scrolled up." else "I can't scroll right now. Enable the accessibility service.")
+            }
+            CommandType.SCROLL_DOWN -> {
+                val ok = AccessibilityController.scrollDown()
+                callback.onReply(if (ok) "Scrolled down." else "I can't scroll right now. Enable the accessibility service.")
+            }
+            CommandType.STOP -> { AccessibilityController.stopScrolling(); callback.onReply("Okay, stopped.") }
+            CommandType.BACK -> {
+                val ok = AccessibilityController.pressBack()
+                callback.onReply(if (ok) "Going back." else "I can't go back right now. Enable the accessibility service.")
+            }
+            CommandType.CHAT -> handleChat(text, callback)
+        }
+    }
+
+    private fun handleChat(text: String, callback: Callback) {
+        if (onlineHandler.isAvailable()) {
+            Thread {
+                val latch = java.util.concurrent.CountDownLatch(1)
+                var onlineReply = ""
+                runCatching {
+                    onlineHandler.getReply(text) { reply -> onlineReply = reply; latch.countDown() }
+                }
+                latch.await(35, java.util.concurrent.TimeUnit.SECONDS)
+                callback.onReply(if (onlineReply.isNotBlank()) onlineReply else offlineHandler.generate(text))
+            }.start()
+        } else {
+            callback.onReply(offlineHandler.generate(text))
+        }
+    }
+}
+com/zara/assistant/actions/AssistantOrchestrator.kt
+
+package com.zara.assistant.actions
+
+import android.content.Context
+import android.util.Log
+import com.zara.assistant.ai.OfflineResponseHandler
+import com.zara.assistant.ai.OnlineAiHandler
+import com.zara.assistant.stt.ZaraSpeechRecognizer
+import com.zara.assistant.tts.ZaraTts
+
+class AssistantOrchestrator(private val context: Context) {
+
+    companion object { private const val TAG = "ZaraOrchestrator" }
+
+    interface AssistantListener {
+        fun onStateChanged(state: AssistantState)
+        fun onUserMessage(text: String)
+        fun onZaraMessage(text: String)
+        fun onError(message: String)
+    }
+
+    enum class AssistantState { IDLE, LISTENING, THINKING, SPEAKING }
+
+    private val tts = ZaraTts(context)
+    private val stt = ZaraSpeechRecognizer(context)
+    private val onlineHandler = OnlineAiHandler(context)
+    private val offlineHandler = OfflineResponseHandler()
+    private val processor = CommandProcessor(context, onlineHandler, offlineHandler)
+
+    private var listener: AssistantListener? = null
+    @Volatile private var state = AssistantState.IDLE
+    @Volatile private var listening = false
+
+    fun setListener(l: AssistantListener) {
+        listener = l
+        tts.setCallback(object : ZaraTts.Callback {
+            override fun onSpeechStarted() { setState(AssistantState.SPEAKING) }
+            override fun onSpeechDone() {
+                setState(AssistantState.IDLE)
+                if (listening) startListening()
+            }
+        })
+        stt.setListener(object : ZaraSpeechRecognizer.Listener {
+            override fun onReady() { setState(AssistantState.LISTENING) }
+            override fun onPartial(text: String) {}
+            override fun onResult(text: String) {
+                if (text.isBlank()) {
+                    setState(AssistantState.IDLE)
+                    if (listening) startListening()
+                    return
+                }
+                listener?.onUserMessage(text)
+                setState(AssistantState.THINKING)
+                processor.process(text, object : CommandProcessor.Callback {
+                    override fun onReply(reply: String) {
+                        listener?.onZaraMessage(reply)
+                        tts.speak(reply)
+                    }
+                })
+            }
+            override fun onError(code: Int) {
+                val msg = friendlySttError(code)
+                if (msg != null) listener?.onError(msg)
+                setState(AssistantState.IDLE)
+                if (listening) startListening()
+            }
+            override fun onEnd() {}
+        })
+    }
+
+    fun start() { listening = true; startListening() }
+
+    fun stop() {
+        listening = false
+        stt.stopListening()
+        tts.stop()
+        setState(AssistantState.IDLE)
+    }
+
+    fun shutdown() { listening = false; stt.destroy(); tts.shutdown() }
+
+    fun speak(text: String) { listener?.onZaraMessage(text); tts.speak(text) }
+
+    private fun startListening() {
+        if (!listening) return
+        stt.stopListening()
+        stt.startListening()
+    }
+
+    private fun setState(s: AssistantState) { state = s; listener?.onStateChanged(s) }
+
+    private fun friendlySttError(code: Int): String? = when (code) {
+        android.speech.SpeechRecognizer.ERROR_NO_MATCH -> "I didn't catch that. Could you repeat?"
+        android.speech.SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "I didn't hear anything. Tap the mic when you're ready."
+        android.speech.SpeechRecognizer.ERROR_AUDIO -> "There was a problem with the microphone."
+        android.speech.SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "Give me a second, I'm still processing."
+        else -> null
+    }
+}
+com/zara/assistant/MyAccessibilityService.kt
+
+package com.zara.assistant
+
+import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.GestureDescription
+import android.graphics.Path
+import android.os.Build
+import android.util.Log
+import android.view.accessibility.AccessibilityEvent
+import androidx.annotation.RequiresApi
+import com.zara.assistant.actions.AccessibilityController
+import kotlin.concurrent.thread
+
+class MyAccessibilityService : AccessibilityService() {
+
+    companion object {
+        private const val TAG = "ZaraA11y"
+        private const val SCROLL_PAUSE_MS = 4000L
+    }
+
+    @Volatile private var scrollingReels = false
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        AccessibilityController.attach(this)
+    }
+
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        if (event == null) return
+        Log.v(TAG, "event: type=0x${event.eventType.toString(16)} pkg=${event.packageName}")
+    }
+
+    override fun onInterrupt() { stopScrolling() }
+
+    override fun onUnbind(intent: android.content.Intent?): Boolean {
+        AccessibilityController.detach()
+        return super.onUnbind(intent)
+    }
+
+    fun scrollDown(): Boolean = dispatchSwipe(startY = 0.70f, endY = 0.20f)
+    fun scrollUp(): Boolean = dispatchSwipe(startY = 0.20f, endY = 0.70f)
+
+    fun startScrollingReels() {
+        if (scrollingReels) return
+        scrollingReels = true
+        thread(name = "zara-reel-scroll") {
+            while (scrollingReels) {
+                dispatchSwipe(startY = 0.75f, endY = 0.20f)
+                try { Thread.sleep(SCROLL_PAUSE_MS) } catch (_: InterruptedException) { break }
+            }
+        }
+    }
+
+    fun stopScrolling() { scrollingReels = false }
+
+    fun pressBack(): Boolean = performGlobalAction(GLOBAL_ACTION_BACK)
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun dispatchSwipe(startY: Float, endY: Float): Boolean = try {
+        val w = resources.displayMetrics.widthPixels
+        val h = resources.displayMetrics.heightPixels
+        val centerX = w / 2f
+        val path = Path().apply {
+            moveTo(centerX, h * startY)
+            lineTo(centerX, h * endY)
+        }
+        val stroke = GestureDescription.StrokeDescription(path, 0L, 400L)
+        val gesture = GestureDescription.Builder().addStroke(stroke).build()
+        dispatchGesture(gesture, object : GestureResultCallback() {
+            override fun onCompleted(gesture: GestureDescription?) {}
+            override fun onCancelled(gesture: GestureDescription?) {}
+        }, null)
+        true
+    } catch (e: Exception) { false }
+}
+com/zara/assistant/MainActivity.kt
+
+package com.zara.assistant
+
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.provider.Settings
+import android.text.TextUtils
+import android.view.View
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.zara.assistant.actions.AccessibilityController
+import com.zara.assistant.actions.AssistantOrchestrator
+import com.zara.assistant.net.NetworkUtil
+
+class MainActivity : AppCompatActivity(), AssistantOrchestrator.AssistantListener {
+
+    companion object { private const val REQ_RECORD_AUDIO = 101 }
+
+    private lateinit var zara: AssistantOrchestrator
+    private lateinit var micButton: ImageButton
+    private lateinit var statusText: TextView
+    private lateinit var modePill: TextView
+    private lateinit var transcript: LinearLayout
+    private lateinit var transcriptScroll: ScrollView
+    private lateinit var accessibilityHint: TextView
+    @Volatile private var active = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        micButton = findViewById(R.id.micButton)
+        statusText = findViewById(R.id.statusText)
+        modePill = findViewById(R.id.modePill)
+        transcript = findViewById(R.id.transcript)
+        transcriptScroll = findViewById(R.id.transcriptScroll)
+        accessibilityHint = findViewById(R.id.accessibilityHint)
+
+        zara = AssistantOrchestrator(this).also { it.setListener(this) }
+
+        micButton.setOnClickListener {
+            if (!hasMicPermission()) requestMicPermission() else toggleSession()
+        }
+        accessibilityHint.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+        updateModePill()
+        updateAccessibilityHint()
+    }
+
+    override fun onResume() { super.onResume(); updateModePill(); updateAccessibilityHint() }
+    override fun onDestroy() { super.onDestroy(); zara.shutdown() }
+
+    private fun hasMicPermission(): Boolean =
+        ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+
+    private fun requestMicPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECORD_AUDIO), REQ_RECORD_AUDIO)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQ_RECORD_AUDIO) {
+            if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) toggleSession()
+            else { Toast.makeText(this, R.string.mic_permission_denied, Toast.LENGTH_LONG).show(); statusText.text = getString(R.string.mic_permission_denied) }
+        }
+    }
+
+    private fun toggleSession() {
+        if (active) {
+            zara.stop(); active = false; statusText.text = getString(R.string.idle)
+        } else {
+            if (!isAccessibilityEnabled()) Toast.makeText(this, R.string.accessibility_not_enabled, Toast.LENGTH_LONG).show()
+            active = true; zara.start()
+        }
+    }
+
+    override fun onStateChanged(state: AssistantOrchestrator.AssistantState) {
+        runOnUiThread {
+            statusText.text = when (state) {
+                AssistantOrchestrator.AssistantState.IDLE -> getString(R.string.idle)
+                AssistantOrchestrator.AssistantState.LISTENING -> getString(R.string.listening)
+                AssistantOrchestrator.AssistantState.THINKING -> getString(R.string.thinking)
+                AssistantOrchestrator.AssistantState.SPEAKING -> getString(R.string.speaking)
+            }
+        }
+    }
+
+    override fun onUserMessage(text: String) { runOnUiThread { addBubble("You: $text", true) } }
+    override fun onZaraMessage(text: String) { runOnUiThread { addBubble("Zara: $text", false) } }
+    override fun onError(message: String) { runOnUiThread { Toast.makeText(this, message, Toast.LENGTH_SHORT).show() } }
+
+    private fun addBubble(text: String, isUser: Boolean) {
+        val tv = layoutInflater.inflate(R.layout.item_message, transcript, false) as TextView
+        tv.text = text
+        tv.setBackgroundColor(ContextCompat.getColor(this, if (isUser) R.color.surface_variant else R.color.surface))
+        transcript.addView(tv)
+        transcriptScroll.post { transcriptScroll.fullScroll(ScrollView.FOCUS_DOWN) }
+    }
+
+    private fun updateModePill() {
+        val online = NetworkUtil.isOnline(this)
+        modePill.text = getString(if (online) R.string.online_mode else R.string.offline_mode)
+        modePill.setTextColor(ContextCompat.getColor(this, if (online) R.color.pulse_online else R.color.pulse_offline))
+    }
+
+    private fun updateAccessibilityHint() {
+        accessibilityHint.visibility = if (isAccessibilityEnabled()) View.GONE else View.VISIBLE
+    }
+
+    private fun isAccessibilityEnabled(): Boolean {
+        if (AccessibilityController.isAvailable()) return true
+        val enabled = Settings.Secure.getInt(contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED, 0) == 1
+        if (!enabled) return false
+        val list = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
+        val target = packageName + "/" + MyAccessibilityService::class.java.name
+        val splitter = TextUtils.SimpleStringSplitter(':').apply { setString(list) }
+        while (splitter.hasNext()) { if (splitter.next().equals(target, ignoreCase = true)) return true }
+        return false
+    }
+}
+Iska pdf banado please

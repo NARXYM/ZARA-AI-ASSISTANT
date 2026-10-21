@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#121212"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Idle"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:layout_marginBottom="32dp"/>
+
+    <ImageButton
+        android:id="@+id/micButton"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_btn_speak_now"
+        android:contentDescription="Mic Button"
+        android:scaleType="fitCenter"/>
+
+</LinearLayout>
